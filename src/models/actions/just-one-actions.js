@@ -30,6 +30,14 @@ export class SetDuplicateMsg extends GameActionMsg {
   }
 }
 
+export class SetUniqueMsg extends GameActionMsg {
+  constructor(hintId) {
+    super("SetUnique", {
+      hint: hintId,
+    });
+  }
+}
+
 export class RevealHintsMsg extends GameActionMsg {
   constructor() {
     super("RevealHints", {});

@@ -75,26 +75,29 @@ class JustOne extends Component {
 
     const word = roundState.word;
 
-    let wordPrompt = null;
-    if (acceptingInput) {
-      wordPrompt = (
-        <form
-          onSubmit={this.getSubmitFunction(guesser === myId)}
-          id="wordPrompt"
-        >
-          <label>
-            <h4>{imGuesser ? "Guess" : `Hint for word: ${word}`}</h4>
+    let wordPrompt = (
+      <form onSubmit={this.getSubmitFunction(guesser === myId)} id="wordPrompt">
+        <label>
+          <h4>
+            {imGuesser
+              ? "You are Guessing the Word"
+              : `Secret Word is: ${word}`}
+          </h4>
+        </label>
+        {acceptingInput && (
+          <>
             <input
+              className="playerInput"
               type="text"
               value={this.state.input}
               onChange={this.handleInputChange}
               placeholder={imGuesser ? "make a guess" : "type a hint"}
             />
-          </label>
-          <input type="submit" value="Submit" id="guessBtn" />
-        </form>
-      );
-    }
+            <input type="submit" value="Submit" id="guessBtn" />
+          </>
+        )}
+      </form>
+    );
 
     let revealHintsPrompt = null;
     if (myId !== guesser && curRoundState === ROUND_STATE.hintsSubmitted) {
@@ -116,6 +119,7 @@ class JustOne extends Component {
         <JustOnePlayer
           key={id}
           id={id}
+          lobbySocket={this.props.lobbySocket}
           displayName={this.usersMap[id]}
           isGuesser={myId === guesser}
           hintState={roundState.hints[id]}
