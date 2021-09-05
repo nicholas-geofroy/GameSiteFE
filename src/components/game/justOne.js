@@ -4,9 +4,14 @@ import {
   GuessMsg,
   HintMsg,
   RevealHintsMsg,
+  CorrectGuessMsg,
+  WrongGuessMsg,
+  NextRoundMsg,
 } from "../../models/actions/just-one-actions";
 import _ from "underscore";
 import "./justOneStyle.css";
+import GuesserInput from "./justOneGuesserInput";
+import HinterInput from "./justOneHinterInput";
 
 const ROUND_STATE = {
   waitingForHints: 0,
@@ -19,7 +24,7 @@ class JustOne extends Component {
     console.log("Just One Constructor");
     super(props);
     this.handleInputChange = this.handleInputChange.bind(this);
-    this.getSubmitFunction = this.getSubmitFunction.bind(this);
+    this.getSubmitWordFunction = this.getSubmitWordFunction.bind(this);
     this.state = {
       input: "",
     };
@@ -37,7 +42,7 @@ class JustOne extends Component {
     });
   }
 
-  getSubmitFunction(isGuesser) {
+  getSubmitWordFunction(isGuesser) {
     return (event) => {
       console.log("User has submitted a guess/hint");
       event.preventDefault();
@@ -56,6 +61,8 @@ class JustOne extends Component {
       return <div>loading...</div>;
     }
 
+    const lobbySocket = this.props.lobbySocket;
+
     const roundStates = gameState.roundStates;
     const players = gameState.players;
     const roundState = roundStates[roundStates.length - 1];
@@ -73,45 +80,12 @@ class JustOne extends Component {
       (imGuesser && curRoundState === ROUND_STATE.hintsRevealed) ||
       (!imGuesser && curRoundState === ROUND_STATE.waitingForHints);
 
+    const guessSubmitted = roundState.guesses.length > 0;
+    const guess = _.isEmpty(roundState.guesses)
+      ? null
+      : _.last(roundState.guesses);
+
     const word = roundState.word;
-
-    let wordPrompt = (
-      <form onSubmit={this.getSubmitFunction(guesser === myId)} id="wordPrompt">
-        <label>
-          <h4>
-            {imGuesser
-              ? "You are Guessing the Word"
-              : `Secret Word is: ${word}`}
-          </h4>
-        </label>
-        {acceptingInput && (
-          <>
-            <input
-              className="playerInput"
-              type="text"
-              value={this.state.input}
-              onChange={this.handleInputChange}
-              placeholder={imGuesser ? "make a guess" : "type a hint"}
-            />
-            <input type="submit" value="Submit" id="guessBtn" />
-          </>
-        )}
-      </form>
-    );
-
-    let revealHintsPrompt = null;
-    if (myId !== guesser && curRoundState === ROUND_STATE.hintsSubmitted) {
-      revealHintsPrompt = (
-        <>
-          <button
-            type="Button"
-            onClick={() => this.props.lobbySocket.send(new RevealHintsMsg())}
-          >
-            Reveal Hints
-          </button>
-        </>
-      );
-    }
 
     const playerInfos = players
       .filter((p) => p !== guesser)
@@ -130,8 +104,25 @@ class JustOne extends Component {
 
     return (
       <div id="justOneGameView">
-        {wordPrompt}
-        {revealHintsPrompt}
+        {imGuesser ? (
+          <GuesserInput
+            hintsRevealed={curRoundState === ROUND_STATE.hintsRevealed}
+            guessState={guess}
+            onGuess={(guess) => lobbySocket.send(new GuessMsg(guess))}
+            onNextRound={() => lobbySocket.send(new NextRoundMsg())}
+          />
+        ) : (
+          <HinterInput
+            word={word}
+            guess={guess}
+            hintsSubmitted={roundState.hintsSubmitted}
+            hintsRevealed={roundState.hintsRevealed}
+            onGuessCorrect={() => lobbySocket.send(new CorrectGuessMsg())}
+            onGuessWrong={() => lobbySocket.send(new WrongGuessMsg())}
+            onRevealHints={() => lobbySocket.send(new RevealHintsMsg())}
+            onHint={(hint) => lobbySocket.send(new HintMsg(hint))}
+          />
+        )}
         <ul id="playerList">{playerInfos}</ul>
       </div>
     );

@@ -43,3 +43,15 @@ export class RevealHintsMsg extends GameActionMsg {
     super("RevealHints", {});
   }
 }
+
+export class CorrectGuessMsg extends GameActionMsg {
+  constructor() {
+    super("CorrectGuess", {});
+  }
+}
+
+export class WrongGuessMsg extends GameActionMsg {
+  constructor() {
+    super("WrongGuess", {});
+  }
+}
