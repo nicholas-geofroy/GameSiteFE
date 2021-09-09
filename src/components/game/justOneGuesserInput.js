@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Button, Container, Row } from "react-bootstrap";
 
 export default function GuesserInput({
   hintsRevealed,
@@ -12,44 +13,70 @@ export default function GuesserInput({
     setGuess(event.target.value);
   };
 
-  const shouldGuess = !guessState || guessState.userCheck;
+  const shouldGuess =
+    !guessState || (guessState.userCheck && !guessState.isCorrect);
   const wrongGuess =
     guessState && guessState.userCheck && !guessState.isCorrect;
+
+  const rightGuess = guessState && guessState.isCorrect;
   return (
-    <div id="wordPrompt">
-      <label>
-        <h4>You are Guessing the Word</h4>
-      </label>
+    <Container id="wordPrompt" fluid="md">
+      <Row className="justify-content-md-center">
+        <label>
+          <h4>You are Guessing the Word</h4>
+        </label>
+      </Row>
       {hintsRevealed && shouldGuess && (
         <>
-          <input
-            className="playerInput"
-            type="text"
-            value={guess}
-            onChange={handleInputChange}
-            placeholder={"make a guess"}
-          />
+          <Row className="justify-content-md-center">
+            <input
+              className="playerInput"
+              type="text"
+              value={guess}
+              onChange={handleInputChange}
+              placeholder={"make a guess"}
+            />
+          </Row>
           {hintsRevealed && wrongGuess && (
-            <span
-              style={{
-                color: "red",
+            <Row>
+              <span
+                style={{
+                  color: "red",
+                }}
+              >
+                Wrong Guess
+              </span>
+            </Row>
+          )}
+          <Row className="justify-content-md-center">
+            <Button
+              id="guessBtn"
+              onClick={(e) => {
+                onGuess(guess);
+                setGuess("");
               }}
             >
-              Wrong Guess
-            </span>
-          )}
-          <input
-            type="submit"
-            value="Submit"
-            id="guessBtn"
-            onClick={(e) => {
-              onGuess(guess);
-              setGuess("");
-            }}
-          />
-          <button onClick={() => onNextRound()}>Next Round</button>
+              Submit
+            </Button>
+          </Row>
         </>
       )}
-    </div>
+      {rightGuess && (
+        <Row className="justify-content-md-center">
+          <h5>
+            <span
+              style={{
+                color: "green",
+              }}
+            >
+              You Guessed Correctly!
+            </span>
+          </h5>
+        </Row>
+      )}
+      <Row className="justify-content-md-center">
+        <Button onClick={() => onNextRound()}>Next Round</Button>
+      </Row>
+    </Container>
   );
 }

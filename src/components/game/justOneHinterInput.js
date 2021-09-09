@@ -1,3 +1,4 @@
+import { Button, Col, Container, Row } from "react-bootstrap";
 import { useState } from "react";
 
 export default function HinterInput({
@@ -16,13 +17,17 @@ export default function HinterInput({
     setHint(event.target.value);
   };
 
+  const shouldVerifyGuess = guess && !guess.userCheck && !guess.isCorrect;
+
   return (
-    <div id="wordPrompt">
-      <label>
-        <h4>The Word is: "{word}"</h4>
-      </label>
+    <Container id="wordPrompt">
+      <Row className="justify-content-md-center">
+        <label>
+          <h4>The Word is: "{word}"</h4>
+        </label>
+      </Row>
       {!hintsSubmitted && (
-        <>
+        <Row className="justify-content-md-center">
           <input
             className="playerInput"
             type="text"
@@ -30,39 +35,48 @@ export default function HinterInput({
             onChange={handleInputChange}
             placeholder={"submit your hint"}
           />
-          <input
-            type="submit"
-            value="Submit"
-            id="hintBtn"
-            onClick={(e) => onHint(hint)}
-          />
-        </>
+          <Button id="hintBtn" onClick={(e) => onHint(hint)}>
+            Submit
+          </Button>
+        </Row>
       )}
       {hintsSubmitted && !hintsRevealed && (
-        <>
-          <button type="Button" onClick={() => onRevealHints()}>
+        <Row className="justify-content-md-center">
+          <Button type="Button" onClick={() => onRevealHints()}>
             Reveal Hints
-          </button>
-        </>
+          </Button>
+        </Row>
       )}
       {hintsRevealed && (!guess || (guess.userCheck && !guess.isCorrect)) && (
         <h4>Waiting for a guess...</h4>
       )}
-      {guess && !guess.userCheck && (
+      {shouldVerifyGuess && (
         <>
-          <label>
-            <h4>
-              Is <b>{guess.guess}</b> Correct?
-            </h4>
-          </label>
-          <button value="Yes" onClick={(e) => onGuessCorrect()}>
-            Yes
-          </button>
-          <button id="guessBtn" onClick={() => onGuessWrong()}>
-            No
-          </button>
+          <Row className="justify-content-md-center">
+            <label>
+              <h4>
+                Is <b>{guess.guess}</b> Correct?
+              </h4>
+            </label>
+          </Row>
+          <Row className="justify-content-center align-items-center">
+            <Col>
+              <Button
+                value="Yes"
+                onClick={(e) => onGuessCorrect()}
+                className="float-right"
+              >
+                Yes
+              </Button>
+            </Col>
+            <Col>
+              <Button id="guessBtn" onClick={() => onGuessWrong()}>
+                No
+              </Button>
+            </Col>
+          </Row>
         </>
       )}
-    </div>
+    </Container>
   );
 }
