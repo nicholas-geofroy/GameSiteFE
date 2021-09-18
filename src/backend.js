@@ -2,9 +2,9 @@ import { useEffect, useState } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 import _ from "underscore";
 
-export const backend_url = "localhost:9000";
+export const backend_url = process.env.REACT_APP_SERVER_URL;
 export const default_opts = {
-  audience: "https://cards-test.geofroy.ca",
+  audience: process.env.REACT_APP_AUTH0_AUDIENCE,
   scope: "",
 };
 
