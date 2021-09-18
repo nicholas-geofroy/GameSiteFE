@@ -133,7 +133,7 @@ class ExistingLobby extends Component {
 
   updateUserDisplayName(userId) {
     makeApiCall(
-      "http://" + backend_url + "/user/" + encodeURIComponent(userId),
+      backend_url + "/user/" + encodeURIComponent(userId),
       default_opts,
       this.props.auth0
     ).then((data) => {
