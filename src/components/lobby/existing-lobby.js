@@ -5,7 +5,8 @@ import { withAuth0 } from "@auth0/auth0-react";
 import "./lobby.css";
 
 import {
-  backend_url,
+  http_url,
+  ws_url,
   default_opts,
   createWs,
   makeApiCall,
@@ -68,7 +69,7 @@ class ExistingLobby extends Component {
     const lobbyId = this.props.match.params.lobbyId;
 
     createWs(
-      "ws://" + backend_url + "/lobby/" + lobbyId + "/ws",
+      ws_url + "/lobby/" + lobbyId + "/ws",
       default_opts,
       this.props.auth0
     )
@@ -133,7 +134,7 @@ class ExistingLobby extends Component {
 
   updateUserDisplayName(userId) {
     makeApiCall(
-      backend_url + "/user/" + encodeURIComponent(userId),
+      http_url + "/user/" + encodeURIComponent(userId),
       default_opts,
       this.props.auth0
     ).then((data) => {

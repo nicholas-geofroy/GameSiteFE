@@ -2,7 +2,15 @@ import { useEffect, useState } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 import _ from "underscore";
 
-export const backend_url = process.env.REACT_APP_SERVER_URL;
+const backend_url = process.env.REACT_APP_SERVER_URL;
+export const http_url =
+  process.env.REACT_APP_IS_SECURE === "true"
+    ? "https://" + backend_url
+    : "http://" + backend_url;
+export const ws_url =
+  process.env.REACT_APP_IS_SECURE === "true"
+    ? "wss://" + backend_url
+    : "ws://" + backend_url;
 export const default_opts = {
   audience: process.env.REACT_APP_AUTH0_AUDIENCE,
   scope: "",

@@ -1,24 +1,21 @@
-import React from "react"
-import { backend_url, useApi } from "../../backend"
+import React from "react";
 
 const UserList = (props) => {
-  const users = props.users.map(u => 
+  const users = props.users.map((u) => (
     <User key={u.id} userId={u.id} displayName={u.displayName}></User>
-  );
-  return (
-    <ul>{users}</ul>
-  );
-}
+  ));
+  return <ul>{users}</ul>;
+};
 
 const User = (props) => {
-  const userId = props.userId
-  const displayName = props.displayName
-  
+  const userId = props.userId;
+  const displayName = props.displayName;
+
   if (!displayName) {
-    return <div key={userId}>Connecting...</div>
+    return <div key={userId}>Connecting...</div>;
   } else {
-    return <li key={userId}>{displayName}</li>
+    return <li key={userId}>{displayName}</li>;
   }
-}
+};
 
 export default UserList;

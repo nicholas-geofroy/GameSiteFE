@@ -1,11 +1,11 @@
 import React from "react";
 import { Redirect } from "react-router-dom";
 
-import { backend_url, default_opts, useApi } from "../../backend";
+import { http_url, default_opts, useApi } from "../../backend";
 
 const useCreateLobby = () => {
   const opts = { ...default_opts, method: "POST", body: "{}" };
-  return useApi(backend_url + "/lobby", opts);
+  return useApi(http_url + "/lobby", opts);
 };
 
 const NewLobby = () => {
