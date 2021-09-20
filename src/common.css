@@ -1,0 +1,29 @@
+:root {
+  --bg-color: #121212;
+  --sf-color: #ffffff10;
+  --err-color: #cf6679;
+  --p-color: #bb86fc;
+  --pv-color: #3700b3;
+  --s-color: #03dac6;
+  --on-p-color: #000000;
+  --on-s-color: #000000;
+  --on-bg-color: #ffffff;
+  --on-sf-color: #ffffff;
+  --on-err-color: #000000;
+}
+
+.primary {
+  background-color: var(--p-color);
+  color: var(--on-p-color);
+}
+
+.secondary {
+  background-color: var(--s-color);
+  color: var(--on-s-color);
+}
+
+.button {
+  border: none;
+  border-radius: 8px;
+  padding: 5px;
+}

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Button, Container, Row } from "react-bootstrap";
+import { Container, Row } from "react-bootstrap";
 
 export default function GuesserInput({
   hintsRevealed,
@@ -21,14 +21,14 @@ export default function GuesserInput({
   const rightGuess = guessState && guessState.isCorrect;
   return (
     <Container id="wordPrompt" fluid="md">
-      <Row className="justify-content-md-center">
+      <Row className="justify-content-center">
         <label>
           <h4>You are Guessing the Word</h4>
         </label>
       </Row>
       {hintsRevealed && shouldGuess && (
         <>
-          <Row className="justify-content-md-center">
+          <Row className="justify-content-center">
             <input
               className="playerInput"
               type="text"
@@ -48,8 +48,9 @@ export default function GuesserInput({
               </span>
             </Row>
           )}
-          <Row className="justify-content-md-center">
-            <Button
+          <Row className="justify-content-center">
+            <button
+              className="button primary"
               id="guessBtn"
               onClick={(e) => {
                 onGuess(guess);
@@ -57,12 +58,12 @@ export default function GuesserInput({
               }}
             >
               Submit
-            </Button>
+            </button>
           </Row>
         </>
       )}
       {rightGuess && (
-        <Row className="justify-content-md-center">
+        <Row className="justify-content-center">
           <h5>
             <span
               style={{
@@ -74,8 +75,10 @@ export default function GuesserInput({
           </h5>
         </Row>
       )}
-      <Row className="justify-content-md-center">
-        <Button onClick={() => onNextRound()}>Next Round</Button>
+      <Row className="justify-content-center">
+        <button className="button primary" onClick={() => onNextRound()}>
+          Next Round
+        </button>
       </Row>
     </Container>
   );

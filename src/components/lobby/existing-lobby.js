@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import Button from "react-bootstrap/Button";
 import { withRouter } from "react-router";
 import { withAuth0 } from "@auth0/auth0-react";
 import "./lobby.css";
@@ -217,9 +216,9 @@ class ExistingLobby extends Component {
         <h2>{gameTitle} Lobby</h2>
         <h4>Members</h4>
         <UserList users={users}></UserList>
-        <Button variant="primary" onClick={this.onStartClick}>
+        <button className="button primary" onClick={this.onStartClick}>
           Start Game
-        </Button>
+        </button>
       </div>
     );
   }

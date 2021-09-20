@@ -1,0 +1,10 @@
+@import "../common.css";
+
+#navbar {
+  background-color: var(--sf-color);
+  color: var(--on-sf-color);
+}
+
+#navbar a {
+  color: var(--p-color);
+}

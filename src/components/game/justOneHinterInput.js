@@ -1,4 +1,4 @@
-import { Button, Col, Container, Row } from "react-bootstrap";
+import { Col, Container, Row } from "react-bootstrap";
 import { useState } from "react";
 
 export default function HinterInput({
@@ -21,13 +21,13 @@ export default function HinterInput({
 
   return (
     <Container id="wordPrompt">
-      <Row className="justify-content-md-center">
+      <Row className="justify-content-center">
         <label>
           <h4>The Word is: "{word}"</h4>
         </label>
       </Row>
       {!hintsSubmitted && (
-        <Row className="justify-content-md-center">
+        <Row className="justify-content-center">
           <input
             className="playerInput"
             type="text"
@@ -35,16 +35,24 @@ export default function HinterInput({
             onChange={handleInputChange}
             placeholder={"submit your hint"}
           />
-          <Button id="hintBtn" onClick={(e) => onHint(hint)}>
+          <button
+            className="button primary"
+            id="hintBtn"
+            onClick={(e) => onHint(hint)}
+          >
             Submit
-          </Button>
+          </button>
         </Row>
       )}
       {hintsSubmitted && !hintsRevealed && (
-        <Row className="justify-content-md-center">
-          <Button type="Button" onClick={() => onRevealHints()}>
+        <Row className="justify-content-center">
+          <button
+            className="button primary"
+            type="button"
+            onClick={() => onRevealHints()}
+          >
             Reveal Hints
-          </Button>
+          </button>
         </Row>
       )}
       {hintsRevealed && (!guess || (guess.userCheck && !guess.isCorrect)) && (
@@ -52,7 +60,7 @@ export default function HinterInput({
       )}
       {shouldVerifyGuess && (
         <>
-          <Row className="justify-content-md-center">
+          <Row className="justify-content-center">
             <label>
               <h4>
                 Is <b>{guess.guess}</b> Correct?
@@ -61,18 +69,23 @@ export default function HinterInput({
           </Row>
           <Row className="justify-content-center align-items-center">
             <Col>
-              <Button
+              <button
+                className="button primary"
                 value="Yes"
                 onClick={(e) => onGuessCorrect()}
                 className="float-right"
               >
                 Yes
-              </Button>
+              </button>
             </Col>
             <Col>
-              <Button id="guessBtn" onClick={() => onGuessWrong()}>
+              <button
+                className="button primary"
+                id="guessBtn"
+                onClick={() => onGuessWrong()}
+              >
                 No
-              </Button>
+              </button>
             </Col>
           </Row>
         </>

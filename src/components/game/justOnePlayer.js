@@ -2,6 +2,7 @@ import {
   SetDuplicateMsg,
   SetUniqueMsg,
 } from "../../models/actions/just-one-actions";
+import { Button } from "react-bootstrap";
 
 function JustOnePlayer(props) {
   const state = props.hintState;
@@ -38,17 +39,19 @@ function JustOnePlayer(props) {
       }
     }
   } else {
-    hintElem = "...";
+    hintElem = <span className="waitingText">waiting for hint</span>;
   }
   return (
     <div className="playerInfo">
       <div className="playerName">{props.displayName}</div>
-      {props.hintsSubmitted && !props.isGuesser && (
-        <button className="showBtn" onClick={onToggleShow}>
-          {state.isDuplicate ? "Show" : "Hide"}
-        </button>
-      )}
-      <div className="playerHint">{hintElem}</div>
+      <div className="playerHint">
+        {props.hintsSubmitted && !props.isGuesser && (
+          <button className="showBtn button secondary" onClick={onToggleShow}>
+            {state.isDuplicate ? "Show" : "Hide"}
+          </button>
+        )}
+        <div className="hintText">{hintElem}</div>
+      </div>
     </div>
   );
 }

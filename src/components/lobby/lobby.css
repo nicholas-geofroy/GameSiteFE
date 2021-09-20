@@ -1,4 +1,7 @@
+@import "../../common.css";
+
 #lobby {
   padding: 5vh 5vw;
-  background-color: lightcyan;
+  height: 100vh;
+  color: var(--on-bg-color);
 }
