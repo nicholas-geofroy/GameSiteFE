@@ -1,5 +1,6 @@
 :root {
   --bg-color: #121212;
+  /*surface colour*/
   --sf-color: #ffffff10;
   --err-color: #cf6679;
   --p-color: #bb86fc;
@@ -20,6 +21,15 @@
 .secondary {
   background-color: var(--s-color);
   color: var(--on-s-color);
+}
+
+.surface {
+  background-color: var(--sf-color);
+  color: var(--on-sf-color);
+}
+
+.input {
+  border: 1px solid var(--p-color);
 }
 
 .button {

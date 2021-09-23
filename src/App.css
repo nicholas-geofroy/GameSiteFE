@@ -4,3 +4,8 @@
   text-align: center;
   background-color: var(--bg-color);
 }
+
+html {
+  background-color: var(--bg-color);
+  color: var(--on-bg-color);
+}

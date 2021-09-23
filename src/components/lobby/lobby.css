@@ -5,3 +5,15 @@
   height: 100vh;
   color: var(--on-bg-color);
 }
+
+#lobbyNameInput {
+  margin: 20px auto;
+}
+
+.title {
+  color: var(--p-color);
+}
+
+input.button {
+  margin: 10px auto;
+}

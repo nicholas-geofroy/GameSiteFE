@@ -1,4 +1,4 @@
-import {NavLink} from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import React from "react";
 
 const MainNav = () => (
@@ -25,7 +25,7 @@ const MainNav = () => (
       className="nav-link"
       activeClassName="router-link-exact-active"
     >
-      Create Lobby
+      Lobby
     </NavLink>
   </div>
 );
