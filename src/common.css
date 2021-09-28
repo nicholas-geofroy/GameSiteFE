@@ -29,11 +29,25 @@
 }
 
 .input {
-  border: 1px solid var(--p-color);
+  border: 2px solid var(--p-color);
+  color: var(--on-sf-color);
+}
+
+.input:focus {
+  outline: var(--s-color) 2px outset;
 }
 
 .button {
   border: none;
   border-radius: 8px;
-  padding: 5px;
+  padding: 5px 10px;
+  transition-duration: 0.3s;
+}
+
+.button:hover {
+  filter: brightness(90%);
+}
+
+.button:active {
+  transform: translateZ(20px);
 }

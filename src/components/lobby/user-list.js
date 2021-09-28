@@ -1,7 +1,7 @@
 import React from "react";
 
 const UserList = (props) => {
-  const users = props.users.map((u) => (
+  const users = Object.values(props.users).map((u) => (
     <User key={u.id} userId={u.id} displayName={u.displayName}></User>
   ));
   return <ul>{users}</ul>;

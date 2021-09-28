@@ -1,13 +1,14 @@
 import React from "react";
 import { useAuth0 } from "@auth0/auth0-react";
-import { default_opts } from "./backend.js"
+import { default_opts } from "./backend/backend";
 
 const LoginButton = () => {
   const { loginWithRedirect } = useAuth0();
 
-  return <button onClick={() => loginWithRedirect(default_opts)}>Log In</button>;
+  return (
+    <button onClick={() => loginWithRedirect(default_opts)}>Log In</button>
+  );
 };
-
 
 const LogoutButton = () => {
   const { logout } = useAuth0();
@@ -37,4 +38,4 @@ const Profile = () => {
   );
 };
 
-export {LogoutButton, LoginButton, Profile};
+export { LogoutButton, LoginButton, Profile };

@@ -9,7 +9,8 @@ import {
   default_opts,
   createWs,
   makeApiCall,
-} from "../../backend";
+} from "../../backend/backend";
+import UserManager from "../../backend/userManager";
 import StartGameMsg from "../../models/startgame-msg";
 import BetMsg from "../../models/bet-msg";
 import Loading from "../loading";
@@ -54,9 +55,11 @@ class ExistingLobby extends Component {
 
     this.onStartClick = this.onStartClick.bind(this);
     this.updateUserDisplayName = this.updateUserDisplayName.bind(this);
+    this.updateUsers = this.updateUsers.bind(this);
+    this.userManager = new UserManager(this.props.auth0);
     this.state = {
       lobbyState: LOBBY_STATE.SETUP,
-      users: [],
+      users: {},
       gameState: {},
       curGameType: "",
       lobbySocket: null,
@@ -75,24 +78,7 @@ class ExistingLobby extends Component {
       .then((lobbySocket) => {
         console.log("register callbacks");
         lobbySocket.register("members", messageType.MEMBERS, (data) => {
-          const curUsers = this.state.users;
-          var users = [];
-          data.users.forEach((userId) => {
-            var idx = _.findIndex(curUsers, (u) => u.id == userId);
-            if (idx < 0) {
-              console.log(`new unkown user ${userId}. Fetching...`);
-              users.push({
-                id: userId,
-                displayName: "",
-              });
-              this.updateUserDisplayName(userId);
-            } else {
-              users.push(curUsers[idx]);
-            }
-          });
-          this.setState({
-            users: users,
-          });
+          this.updateUsers(data.users);
         });
         lobbySocket.register("start", messageType.START_GAME, (_) => {
           console.log("Start game message received");
@@ -107,6 +93,7 @@ class ExistingLobby extends Component {
         lobbySocket.register("gameState", messageType.GAME_STATE, (data) => {
           const state = data.state;
           console.log("game state message received. state:", state);
+          this.updateUsers(state.players);
           this.setState({
             gameState: state,
             lobbyState: LOBBY_STATE.IN_GAME,
@@ -131,24 +118,35 @@ class ExistingLobby extends Component {
     }
   }
 
+  updateUsers(newUsers) {
+    console.log("update users (new users:)", newUsers);
+    var users = { ...this.state.users };
+    newUsers.forEach((userId) => {
+      if (!(userId in users)) {
+        console.log(`new unkown user ${userId}. Fetching...`);
+        users[userId] = {
+          id: userId,
+          loading: true,
+          displayName: "",
+        };
+        this.updateUserDisplayName(userId);
+      }
+    });
+    this.setState({
+      users: users,
+    });
+  }
+
   updateUserDisplayName(userId) {
-    makeApiCall(
-      http_url + "/user/" + encodeURIComponent(userId),
-      default_opts,
-      this.props.auth0
-    ).then((data) => {
-      const displayName = data.displayName;
+    this.userManager.getDisplayName(userId).then((displayName) => {
       this.setState((prevState) => ({
-        users: prevState.users.map((u) => {
-          if (u.id == userId) {
-            return {
-              id: userId,
-              displayName: displayName,
-            };
-          } else {
-            return u;
-          }
-        }),
+        users: {
+          ...prevState.users,
+          [userId]: {
+            id: userId,
+            displayName: displayName,
+          },
+        },
       }));
     });
   }

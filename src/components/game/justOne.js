@@ -21,19 +21,12 @@ const ROUND_STATE = {
 
 class JustOne extends Component {
   constructor(props) {
-    console.log("Just One Constructor");
     super(props);
     this.handleInputChange = this.handleInputChange.bind(this);
     this.getSubmitWordFunction = this.getSubmitWordFunction.bind(this);
     this.state = {
       input: "",
     };
-
-    var usersMap = {};
-    this.props.users.forEach(
-      ({ id, displayName }) => (usersMap[id] = displayName)
-    );
-    this.usersMap = usersMap;
   }
 
   handleInputChange(event) {
@@ -94,7 +87,7 @@ class JustOne extends Component {
           key={id}
           id={id}
           lobbySocket={this.props.lobbySocket}
-          displayName={this.usersMap[id]}
+          displayName={this.props.users[id].displayName}
           isGuesser={myId === guesser}
           hintState={roundState.hints[id]}
           hintsSubmitted={roundState.hintsSubmitted}

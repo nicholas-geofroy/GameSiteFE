@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Redirect } from "react-router-dom";
 import "./lobby.css";
 
-import { http_url, default_opts, useApi } from "../../backend";
+import { http_url, default_opts, useApi } from "../../backend/backend";
 
 const useCreateLobby = (id) => {
   console.log("useCreateLobby: ", id);

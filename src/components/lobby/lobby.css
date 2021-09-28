@@ -4,6 +4,7 @@
   padding: 5vh 5vw;
   height: 100vh;
   color: var(--on-bg-color);
+  text-align: left;
 }
 
 #lobbyNameInput {

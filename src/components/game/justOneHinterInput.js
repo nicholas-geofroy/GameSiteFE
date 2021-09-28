@@ -29,7 +29,7 @@ export default function HinterInput({
       {!hintsSubmitted && (
         <Row className="justify-content-center">
           <input
-            className="playerInput"
+            className="playerInput input"
             type="text"
             value={hint}
             onChange={handleInputChange}
@@ -73,7 +73,6 @@ export default function HinterInput({
                 className="button primary"
                 value="Yes"
                 onClick={(e) => onGuessCorrect()}
-                className="float-right"
               >
                 Yes
               </button>

@@ -30,7 +30,7 @@ export default function GuesserInput({
         <>
           <Row className="justify-content-center">
             <input
-              className="playerInput"
+              className="playerInput input"
               type="text"
               value={guess}
               onChange={handleInputChange}
