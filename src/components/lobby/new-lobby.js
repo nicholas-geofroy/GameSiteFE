@@ -55,7 +55,7 @@ const NewLobby = () => {
       <input
         type="text"
         id="lobbyNameInput"
-        className="surface"
+        className="surface input"
         placeholder="Lobby Name"
         value={lobbyId}
         onChange={(e) => setLobbyId(e.target.value)}

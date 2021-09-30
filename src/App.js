@@ -11,7 +11,11 @@ function App() {
   const { isLoading, error } = useAuth0();
 
   if (isLoading) {
-    return <Loading />;
+    return (
+      <div id="loadingPage">
+        <Loading />
+      </div>
+    );
   }
   if (error) {
     return <div>Oops... {error.message}</div>;

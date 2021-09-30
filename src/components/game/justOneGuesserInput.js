@@ -13,6 +13,13 @@ export default function GuesserInput({
     setGuess(event.target.value);
   };
 
+  const onSubmit = (e) => {
+    e.preventDefault();
+    onGuess(guess);
+    setGuess("");
+    return false;
+  };
+
   const shouldGuess =
     !guessState || (guessState.userCheck && !guessState.isCorrect);
   const wrongGuess =
@@ -28,7 +35,7 @@ export default function GuesserInput({
       </Row>
       {hintsRevealed && shouldGuess && (
         <>
-          <Row className="justify-content-center">
+          <Row className="justify-content-center" as="form" onSubmit={onSubmit}>
             <input
               className="playerInput input"
               type="text"
@@ -38,7 +45,7 @@ export default function GuesserInput({
             />
           </Row>
           {hintsRevealed && wrongGuess && (
-            <Row>
+            <Row className="justify-content-center">
               <span
                 style={{
                   color: "red",
@@ -49,14 +56,7 @@ export default function GuesserInput({
             </Row>
           )}
           <Row className="justify-content-center">
-            <button
-              className="button primary"
-              id="guessBtn"
-              onClick={(e) => {
-                onGuess(guess);
-                setGuess("");
-              }}
-            >
+            <button className="button primary" id="guessBtn" onClick={onSubmit}>
               Submit
             </button>
           </Row>

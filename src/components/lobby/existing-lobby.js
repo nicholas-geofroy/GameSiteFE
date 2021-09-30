@@ -3,13 +3,7 @@ import { withRouter } from "react-router";
 import { withAuth0 } from "@auth0/auth0-react";
 import "./lobby.css";
 
-import {
-  http_url,
-  ws_url,
-  default_opts,
-  createWs,
-  makeApiCall,
-} from "../../backend/backend";
+import { ws_url, default_opts, createWs } from "../../backend/backend";
 import UserManager from "../../backend/userManager";
 import StartGameMsg from "../../models/startgame-msg";
 import BetMsg from "../../models/bet-msg";

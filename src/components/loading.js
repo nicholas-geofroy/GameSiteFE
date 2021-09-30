@@ -1,9 +1,8 @@
 import React from "react";
-import Spinner from 'react-bootstrap/Spinner';
+import Spinner from "react-bootstrap/Spinner";
 
 const Loading = () => (
-  <Spinner animation="border" role="status">
-  </Spinner>
+  <Spinner animation="border" role="status" color="pink"></Spinner>
 );
 
-export default Loading
+export default Loading;

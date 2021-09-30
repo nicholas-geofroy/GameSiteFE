@@ -17,8 +17,13 @@
   padding: 10px;
 }
 
+#wordPrompt > .row {
+  margin-bottom: 5px;
+}
+
 .playerInput {
-  margin: 10px auto;
+  margin: auto;
+  margin-bottom: 5px;
   width: 100%;
   text-align: center;
 }

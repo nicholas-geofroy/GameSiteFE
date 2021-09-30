@@ -51,3 +51,7 @@
 .button:active {
   transform: translateZ(20px);
 }
+
+.spinner-border {
+  color: var(--s-color);
+}

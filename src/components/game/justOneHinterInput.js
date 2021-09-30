@@ -17,7 +17,14 @@ export default function HinterInput({
     setHint(event.target.value);
   };
 
+  const onSubmit = (e) => {
+    e.preventDefault();
+    onHint(hint);
+    return false;
+  };
+
   const shouldVerifyGuess = guess && !guess.userCheck && !guess.isCorrect;
+  const correctGuess = guess && guess.isCorrect;
 
   return (
     <Container id="wordPrompt">
@@ -27,7 +34,7 @@ export default function HinterInput({
         </label>
       </Row>
       {!hintsSubmitted && (
-        <Row className="justify-content-center">
+        <Row className="justify-content-center" as="form" onSubmit={onSubmit}>
           <input
             className="playerInput input"
             type="text"
@@ -35,11 +42,7 @@ export default function HinterInput({
             onChange={handleInputChange}
             placeholder={"submit your hint"}
           />
-          <button
-            className="button primary"
-            id="hintBtn"
-            onClick={(e) => onHint(hint)}
-          >
+          <button className="button primary" id="hintBtn" type="submit">
             Submit
           </button>
         </Row>
@@ -89,6 +92,7 @@ export default function HinterInput({
           </Row>
         </>
       )}
+      {correctGuess && <h4>Waiting for next round...</h4>}
     </Container>
   );
 }
