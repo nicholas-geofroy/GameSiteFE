@@ -1,6 +1,7 @@
 import React from "react";
 import { useState } from "react";
 import { Redirect } from "react-router-dom";
+import Loading from "../loading";
 import "./lobby.css";
 
 import { http_url, default_opts, useApi } from "../../backend/backend";
@@ -15,7 +16,12 @@ const NewLobbyRequest = (params) => {
   const { loading, error, data } = useCreateLobby(params.lobbyId);
 
   if (loading) {
-    return <div>Creating Lobby ... </div>;
+    return (
+      <>
+        <div className="secondaryText">Creating Lobby ... </div>
+        <Loading></Loading>
+      </>
+    );
   }
   if (error) {
     return <div>{error.error}</div>;

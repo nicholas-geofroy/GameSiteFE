@@ -205,8 +205,8 @@ class ExistingLobby extends Component {
     const gameTitle = gameTypeTitle[curGameType];
     return (
       <div id="lobby">
-        <h2>{gameTitle} Lobby</h2>
-        <h4>Members</h4>
+        <h2 className="primaryText">{gameTitle} Lobby</h2>
+        <h4 className="secondaryText">Members</h4>
         <UserList users={users}></UserList>
         <button className="button primary" onClick={this.onStartClick}>
           Start Game

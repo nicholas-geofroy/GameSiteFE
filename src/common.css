@@ -18,9 +18,17 @@
   color: var(--on-p-color);
 }
 
+.primaryText {
+  color: var(--p-color);
+}
+
 .secondary {
   background-color: var(--s-color);
   color: var(--on-s-color);
+}
+
+.secondaryText {
+  color: var(--s-color);
 }
 
 .surface {
