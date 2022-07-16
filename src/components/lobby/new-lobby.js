@@ -4,12 +4,16 @@ import { Redirect } from "react-router-dom";
 import Loading from "../loading";
 import "./lobby.css";
 
-import { http_url, default_opts, useApi } from "../../backend/backend";
+import { http_url, default_opts, useUnauthedApi } from "../../backend/backend";
 
 const useCreateLobby = (id) => {
   console.log("useCreateLobby: ", id);
-  const opts = { ...default_opts, method: "POST", body: "{}" };
-  return useApi(http_url + "/lobby/" + id, opts);
+  const opts = {
+    ...default_opts,
+    method: "POST",
+    body: "{}",
+  };
+  return useUnauthedApi(http_url + "/lobby/" + id, opts);
 };
 
 const NewLobbyRequest = (params) => {

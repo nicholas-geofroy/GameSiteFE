@@ -1,8 +1,8 @@
-import { makeApiCall, http_url, default_opts } from "./backend";
+import { http_url, default_opts, makeIdApiCall } from "./backend";
 
 export default class UserManager {
-  constructor(auth0) {
-    this.auth0 = auth0;
+  constructor(userId) {
+    this.userId = userId;
     this.users = {};
   }
 
@@ -11,10 +11,10 @@ export default class UserManager {
       return Promise.resolve(this.users[userId]);
     } else {
       console.log("makeApiCall cause user doesn't exist yet");
-      return makeApiCall(
+      return makeIdApiCall(
         http_url + "/user/" + encodeURIComponent(userId),
         default_opts,
-        this.auth0
+        this.userId
       ).then((data) => {
         console.log("received data!");
         this.users[userId] = data.displayName;

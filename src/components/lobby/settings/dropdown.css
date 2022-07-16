@@ -1,0 +1,17 @@
+.dropdownOption {
+  display: block;
+  text-decoration: none;
+  padding: 5px 10px;
+}
+
+.dropdownContent {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  min-width: 80px;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+}
+
+.dropdownOption:hover {
+  text-decoration: none;
+}

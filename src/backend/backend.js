@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 import _ from "underscore";
+import LeaveMsg from "../models/leave-msg";
 
 const backend_url = process.env.REACT_APP_SERVER_URL;
 export const http_url =
@@ -14,6 +15,19 @@ export const ws_url =
 export const default_opts = {
   audience: process.env.REACT_APP_AUTH0_AUDIENCE,
   scope: "",
+};
+
+export const makeIdApiCall = (url, options = {}, userId) => {
+  return fetch(url, {
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options.headers,
+      "X-Requested-With": "cardsite-fe",
+      // Add the Authorization header to the existing headers
+      "X-USER-ID": userId,
+    },
+  }).then((res) => res.json());
 };
 
 export const makeApiCall = (url, options = {}, auth0) => {
@@ -34,6 +48,55 @@ export const makeApiCall = (url, options = {}, auth0) => {
       })
     )
     .then((res) => res.json());
+};
+
+export const useIdApi = (url, options = {}, userId) => {
+  options["headers"] = options["headers"] || {};
+  options["headers"]["X-USER-ID"] = userId;
+
+  return useUnauthedApi(url, options);
+};
+
+export const useUnauthedApi = (url, options = {}) => {
+  const [state, setState] = useState({
+    error: null,
+    loading: true,
+    data: null,
+  });
+  const [refreshIndex, setRefreshIndex] = useState(0);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        console.log("try call");
+        const res = await fetch(url, {
+          ...options,
+          headers: {
+            "Content-Type": "application/json",
+            ...options.headers,
+            "X-Requested-With": "cardsite-fe",
+          },
+        });
+        setState({
+          ...state,
+          data: await res.json(),
+          error: null,
+          loading: false,
+        });
+      } catch (error) {
+        setState({
+          ...state,
+          error,
+          loading: false,
+        });
+      }
+    })();
+  }, [refreshIndex]);
+
+  return {
+    ...state,
+    refresh: () => setRefreshIndex(refreshIndex + 1),
+  };
 };
 
 export const useApi = (url, options = {}) => {
@@ -198,9 +261,43 @@ export class LobbySocket {
   }
 
   close() {
+    console.log("close lobby socket");
+    this.send(new LeaveMsg());
     this.ws.close();
   }
 }
+
+export const createWsIdAuth = (url, options = {}, userId) => {
+  var websocket = new WebSocket(url);
+  const ping = () => {
+    websocket.send(pingMsg);
+  };
+  var pingInterval = null;
+  var authMsg = {
+    msgType: "Join",
+    data: {
+      UserId: String(userId),
+    },
+  };
+
+  websocket.onopen = function (event) {
+    console.log("websocket onopen");
+    websocket.send(JSON.stringify(authMsg));
+    pingInterval = window.setInterval(ping, 5000); //ping the server every 5s so connection isnt closed
+  };
+  websocket.onerror = function (event) {
+    console.log("on error");
+    console.log("Error: ", event);
+  };
+
+  websocket.onclose = function (event) {
+    console.log("socket closed", event);
+    if (pingInterval) {
+      window.clearInterval(pingInterval);
+    }
+  };
+  return Promise.resolve(new LobbySocket(websocket));
+};
 
 export const createWs = (url, options = {}, auth0) => {
   const { getAccessTokenSilently } = auth0;

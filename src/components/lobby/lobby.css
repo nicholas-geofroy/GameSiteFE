@@ -11,6 +11,16 @@
   margin: 20px auto;
 }
 
+#titleSection {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.section {
+  padding: 10px 10px;
+  margin-bottom: 10px;
+}
+
 .title {
   color: var(--p-color);
 }

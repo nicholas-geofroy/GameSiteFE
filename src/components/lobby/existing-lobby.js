@@ -3,7 +3,12 @@ import { withRouter } from "react-router";
 import { withAuth0 } from "@auth0/auth0-react";
 import "./lobby.css";
 
-import { ws_url, default_opts, createWs } from "../../backend/backend";
+import {
+  ws_url,
+  default_opts,
+  createWs,
+  createWsIdAuth,
+} from "../../backend/backend";
 import UserManager from "../../backend/userManager";
 import StartGameMsg from "../../models/startgame-msg";
 import BetMsg from "../../models/bet-msg";
@@ -13,7 +18,10 @@ import OhHell from "../game/ohHell";
 import PlayMsg from "../../models/play-msg";
 import JustOne from "../game/justOne";
 import GetStateMsg from "../../models/get-state-msg";
+import GameType from "../game/types";
 import _ from "underscore";
+import SettingsList from "./settings-list";
+import { usernameRequired } from "../../auth/noauth-route";
 
 const LOBBY_STATE = {
   SETUP: "setup",
@@ -21,14 +29,9 @@ const LOBBY_STATE = {
   IN_GAME: "in-game",
 };
 
-const gameType = {
-  JUST_ONE: "JustOne",
-  OH_HELL: "OhHell",
-};
-
 var gameTypeTitle = {};
-gameTypeTitle[gameType.JUST_ONE] = "Just One";
-gameTypeTitle[gameType.OH_HELL] = "Oh Hell";
+gameTypeTitle[GameType.JUST_ONE] = "Just One";
+gameTypeTitle[GameType.OH_HELL] = "Oh Hell";
 gameTypeTitle[""] = "Loading...";
 
 const messageType = {
@@ -50,7 +53,7 @@ class ExistingLobby extends Component {
     this.onStartClick = this.onStartClick.bind(this);
     this.updateUserDisplayName = this.updateUserDisplayName.bind(this);
     this.updateUsers = this.updateUsers.bind(this);
-    this.userManager = new UserManager(this.props.auth0);
+    this.userManager = new UserManager(this.props.userId);
     this.state = {
       lobbyState: LOBBY_STATE.SETUP,
       users: {},
@@ -64,10 +67,10 @@ class ExistingLobby extends Component {
   componentDidMount() {
     const lobbyId = this.props.match.params.lobbyId;
 
-    createWs(
+    createWsIdAuth(
       ws_url + "/lobby/" + lobbyId + "/ws",
       default_opts,
-      this.props.auth0
+      this.props.userId
     )
       .then((lobbySocket) => {
         console.log("register callbacks");
@@ -154,8 +157,7 @@ class ExistingLobby extends Component {
   }
 
   render() {
-    const { user } = this.props.auth0;
-    const userId = user.sub;
+    const userId = this.props.userId;
     const { lobbyState, users, gameState, curGameType, lobbySocket, error } =
       this.state;
 
@@ -167,7 +169,7 @@ class ExistingLobby extends Component {
     }
 
     if (lobbyState === LOBBY_STATE.IN_GAME) {
-      if (curGameType == gameType.OH_HELL) {
+      if (curGameType == GameType.OH_HELL) {
         const onBet = (bet) => {
           const msg = new BetMsg(bet);
           console.log(`Betting ${bet} tricks`);
@@ -188,7 +190,7 @@ class ExistingLobby extends Component {
             onPlay={onPlay}
           />
         );
-      } else if (curGameType == gameType.JUST_ONE) {
+      } else if (curGameType == GameType.JUST_ONE) {
         return (
           <JustOne
             myId={userId}
@@ -205,15 +207,23 @@ class ExistingLobby extends Component {
     const gameTitle = gameTypeTitle[curGameType];
     return (
       <div id="lobby">
-        <h2 className="primaryText">{gameTitle} Lobby</h2>
-        <h4 className="secondaryText">Members</h4>
-        <UserList users={users}></UserList>
-        <button className="button primary" onClick={this.onStartClick}>
-          Start Game
-        </button>
+        <div id="titleSection">
+          <h2 className="primaryText">{gameTitle} Lobby</h2>
+          <button className="button primary" onClick={this.onStartClick}>
+            Start Game
+          </button>
+        </div>
+        <div id="membersSection" className="surface section">
+          <h4 className="secondaryText">Members</h4>
+          <UserList users={users}></UserList>
+        </div>
+        <div id="membersSection" className="surface section">
+          <h4 className="secondaryText">Settings</h4>
+          <SettingsList gameType={curGameType} />
+        </div>
       </div>
     );
   }
 }
 
-export default withAuth0(withRouter(ExistingLobby));
+export default usernameRequired(withRouter(ExistingLobby));

@@ -1,7 +1,9 @@
 :root {
   --bg-color: #121212;
   /*surface colour*/
+  --sf-opaque-color: #242424;
   --sf-color: #ffffff10;
+
   --err-color: #cf6679;
   --p-color: #bb86fc;
   --pv-color: #3700b3;
@@ -11,6 +13,16 @@
   --on-bg-color: #ffffff;
   --on-sf-color: #ffffff;
   --on-err-color: #000000;
+}
+
+.surfaceOpaque {
+  background-color: var(--sf-opaque-color);
+  color: var(--on-sf-color);
+}
+
+.surface {
+  background-color: var(--sf-color);
+  color: var(--on-sf-color);
 }
 
 .primary {

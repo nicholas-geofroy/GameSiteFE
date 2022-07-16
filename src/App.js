@@ -6,6 +6,7 @@ import Profile from "./views/profile";
 import Home from "./views/home";
 import Lobby from "./views/lobby";
 import ProtectedRoute from "./auth/protected-route";
+import NoAuthRoute from "./auth/noauth-route";
 
 function App() {
   const { isLoading, error } = useAuth0();
@@ -17,6 +18,7 @@ function App() {
       </div>
     );
   }
+
   if (error) {
     return <div>Oops... {error.message}</div>;
   }
@@ -26,8 +28,8 @@ function App() {
       <NavBar />
       <Switch>
         <Route path="/" exact component={Home} />
-        <ProtectedRoute path="/profile" component={Profile} />
-        <ProtectedRoute path="/lobby" component={Lobby} />
+        {/* <NoAuthRoute path="/profile" component={Profile} /> */}
+        <Route path="/lobby" component={Lobby} />
       </Switch>
     </div>
   );

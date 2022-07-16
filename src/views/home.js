@@ -2,16 +2,16 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 const titleSize = "5rem";
-const titleLineOneStyle = { color: "var(--p-color)", "font-size": titleSize };
-const titleLineTwoStyle = { color: "var(--s-color)", "font-size": titleSize };
+const titleLineOneStyle = { color: "var(--p-color)", fontSize: titleSize };
+const titleLineTwoStyle = { color: "var(--s-color)", fontSize: titleSize };
 const containerStyle = {
   display: "flex",
-  "flex-direction": "column",
-  "justify-content": "space-around",
+  flexDirection: "column",
+  justifyContent: "space-around",
   height: "80vh",
 };
 const lobbyBtnStyle = {
-  "font-size": "4rem",
+  fontSize: "4rem",
   padding: "5px 30px",
 };
 

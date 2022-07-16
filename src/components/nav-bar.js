@@ -1,7 +1,6 @@
 import React from "react";
 
 import MainNav from "./main-nav";
-import AuthNav from "./auth-nav";
 
 import "./navbar.css";
 
@@ -12,7 +11,6 @@ const NavBar = () => {
         <div className="container">
           <div className="navbar-brand logo" />
           <MainNav />
-          <AuthNav />
         </div>
       </nav>
     </div>
