@@ -36,7 +36,7 @@ gameTypeTitle[""] = "Loading...";
 
 const messageType = {
   MEMBERS: "members",
-  GAME_TYPE: "gameType",
+  GAME_TYPE: "selectedGame",
   START_GAME: "startGame",
   ERROR: "error",
   GAME_STATE: "gameState",
@@ -93,10 +93,10 @@ class ExistingLobby extends Component {
             lobbyState: LOBBY_STATE.IN_GAME,
           });
         });
-        lobbySocket.register("gameType", messageType.GAME_TYPE, (data) => {
-          console.log("New game type: " + data.gameType);
+        lobbySocket.register("selectedGame", messageType.GAME_TYPE, (data) => {
+          console.log("New game type: " + data);
           this.setState({
-            curGameType: data.gameType,
+            curGameType: data,
           });
         });
         this.setState({
