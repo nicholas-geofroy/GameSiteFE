@@ -1,16 +1,14 @@
 import React, { useState } from "react";
 import { Route } from "react-router-dom";
 import Loading from "../components/loading";
-import { useUnauthedApi, http_url } from "../backend/backend";
 
 export const usernameRequired = (WrappedComponent) => {
   const GetUsername = ({ username, ...props }) => {
-    const { error, loading, data } = useUnauthedApi(`${http_url}/users`, {
-      method: "POST",
-      body: JSON.stringify({
-        displayName: username,
-      }),
-    });
+    const loading = false;
+    const error = null;
+    const data = {
+      id: username,
+    };
 
     if (loading) {
       return <Loading></Loading>;

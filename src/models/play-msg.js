@@ -1,7 +1,7 @@
-import WsMessage from "./ws-message"
+import WsMessage from "./ws-message";
 
 export default class PlayMsg extends WsMessage {
   constructor(card) {
-    super("Play", card)
+    super("play", card);
   }
 }

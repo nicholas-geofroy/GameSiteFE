@@ -145,10 +145,7 @@ export const useApi = (url, options = {}) => {
   };
 };
 
-const pingMsg = JSON.stringify({
-  msgType: "Ping",
-  data: {},
-});
+const pingMsg = "ping";
 
 export const useCreateWs = (url, options = {}) => {
   const { getAccessTokenSilently } = useAuth0();
@@ -171,7 +168,7 @@ export const useCreateWs = (url, options = {}) => {
         };
         var pingInterval = null;
         var authMsg = {
-          msgType: "Join",
+          msgType: "join",
           data: {
             Authorization: `Bearer ${accessToken}`,
           },
@@ -240,7 +237,7 @@ export class LobbySocket {
         fun(message.data);
       });
     } else {
-      console.log("Message of type " + type + "not handled");
+      console.log("Message of type '" + type + "' not handled");
     }
   }
 
@@ -274,9 +271,9 @@ export const createWsIdAuth = (url, options = {}, userId) => {
   };
   var pingInterval = null;
   var authMsg = {
-    msgType: "Join",
+    msgType: "join",
     data: {
-      UserId: String(userId),
+      userId: String(userId),
     },
   };
 
@@ -311,7 +308,7 @@ export const createWs = (url, options = {}, auth0) => {
     };
     var pingInterval = null;
     var authMsg = {
-      msgType: "Join",
+      msgType: "join",
       data: {
         Authorization: `Bearer ${accessToken}`,
       },

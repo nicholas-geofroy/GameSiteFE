@@ -1,7 +1,7 @@
-import WsMessage from "./ws-message"
+import WsMessage from "./ws-message";
 
 export default class StartGameMsg extends WsMessage {
   constructor() {
-    super("Start", {})
+    super("start", {});
   }
 }

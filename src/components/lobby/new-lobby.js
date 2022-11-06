@@ -56,7 +56,7 @@ const NewLobby = () => {
   };
 
   if (submit) {
-    return <NewLobbyRequest lobbyId={toValidLobbyId(lobbyId)} />;
+    return <Redirect to={`/lobby/${toValidLobbyId(lobbyId)}`} />;
   }
 
   return (

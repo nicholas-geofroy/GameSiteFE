@@ -35,11 +35,11 @@ gameTypeTitle[GameType.OH_HELL] = "Oh Hell";
 gameTypeTitle[""] = "Loading...";
 
 const messageType = {
-  MEMBERS: "Members",
-  GAME_TYPE: "GameType",
-  START_GAME: "StartGame",
-  ERROR: "Error",
-  GAME_STATE: "GameState",
+  MEMBERS: "members",
+  GAME_TYPE: "gameType",
+  START_GAME: "startGame",
+  ERROR: "error",
+  GAME_STATE: "gameState",
 };
 
 const errorType = {
@@ -66,16 +66,13 @@ class ExistingLobby extends Component {
 
   componentDidMount() {
     const lobbyId = this.props.match.params.lobbyId;
-
-    createWsIdAuth(
-      ws_url + "/lobby/" + lobbyId + "/ws",
-      default_opts,
-      this.props.userId
-    )
+    let url = ws_url + "/lobby/" + lobbyId + "/ws";
+    console.log("Joining lobby", url, "with user id", this.props.userId);
+    createWsIdAuth(url, default_opts, this.props.userId)
       .then((lobbySocket) => {
         console.log("register callbacks");
         lobbySocket.register("members", messageType.MEMBERS, (data) => {
-          this.updateUsers(data.users);
+          this.updateUsers(data);
         });
         lobbySocket.register("start", messageType.START_GAME, (_) => {
           console.log("Start game message received");
@@ -135,17 +132,7 @@ class ExistingLobby extends Component {
   }
 
   updateUserDisplayName(userId) {
-    this.userManager.getDisplayName(userId).then((displayName) => {
-      this.setState((prevState) => ({
-        users: {
-          ...prevState.users,
-          [userId]: {
-            id: userId,
-            displayName: displayName,
-          },
-        },
-      }));
-    });
+    return userId;
   }
 
   onStartClick() {
