@@ -51,7 +51,6 @@ class ExistingLobby extends Component {
     super(props);
 
     this.onStartClick = this.onStartClick.bind(this);
-    this.updateUserDisplayName = this.updateUserDisplayName.bind(this);
     this.updateUsers = this.updateUsers.bind(this);
     this.userManager = new UserManager(this.props.userId);
     this.state = {
@@ -120,19 +119,14 @@ class ExistingLobby extends Component {
         console.log(`new unkown user ${userId}. Fetching...`);
         users[userId] = {
           id: userId,
-          loading: true,
-          displayName: "",
+          loading: false,
+          displayName: userId,
         };
-        this.updateUserDisplayName(userId);
       }
     });
     this.setState({
       users: users,
     });
-  }
-
-  updateUserDisplayName(userId) {
-    return userId;
   }
 
   onStartClick() {
@@ -147,6 +141,7 @@ class ExistingLobby extends Component {
     const userId = this.props.userId;
     const { lobbyState, users, gameState, curGameType, lobbySocket, error } =
       this.state;
+    console.log("users", users);
 
     if (error) {
       return <div>{error.error}</div>;
