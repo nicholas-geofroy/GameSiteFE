@@ -15,15 +15,15 @@ function JustOnePlayer(props) {
 
   const onToggleShow = (e) => {
     props.lobbySocket.send(
-      state.isDuplicate
+      state.duplicate
         ? new SetUniqueMsg(props.id)
         : new SetDuplicateMsg(props.id)
     );
   };
 
   if (hasSubmittedHint) {
-    hint = state.hint;
-    isDuplicate = state.isDuplicate;
+    hint = state.val;
+    isDuplicate = state.duplicate;
 
     if (!props.hintsSubmitted) {
       hintElem = "???";
@@ -47,7 +47,7 @@ function JustOnePlayer(props) {
       <div className="playerHint">
         {props.hintsSubmitted && !props.isGuesser && (
           <button className="showBtn button secondary" onClick={onToggleShow}>
-            {state.isDuplicate ? "Show" : "Hide"}
+            {state.duplicate ? "Show" : "Hide"}
           </button>
         )}
         <div className="hintText">{hintElem}</div>

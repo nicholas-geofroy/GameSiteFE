@@ -66,7 +66,7 @@ export default function HinterInput({
           <Row className="justify-content-center">
             <label>
               <h4>
-                Is <b>{guess.guess}</b> Correct?
+                Is <b>{guess.val}</b> Correct?
               </h4>
             </label>
           </Row>

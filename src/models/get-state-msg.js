@@ -2,6 +2,6 @@ import WsMessage from "./ws-message";
 
 export default class GetStateMsg extends WsMessage {
   constructor() {
-    super("getState", {});
+    super("getState", null);
   }
 }

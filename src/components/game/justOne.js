@@ -14,9 +14,10 @@ import GuesserInput from "./justOneGuesserInput";
 import HinterInput from "./justOneHinterInput";
 
 const ROUND_STATE = {
-  waitingForHints: 0,
-  hintsSubmitted: 1,
-  hintsRevealed: 2,
+  GivingHints: 0,
+  RemovingDuplicates: 1,
+  Guessing: 2,
+  RoundFinished: 3,
 };
 
 class JustOne extends Component {
@@ -56,24 +57,16 @@ class JustOne extends Component {
 
     const lobbySocket = this.props.lobbySocket;
 
-    const roundStates = gameState.roundStates;
+    const rounds = gameState.rounds;
     const players = gameState.players;
-    const roundState = roundStates[roundStates.length - 1];
+    const roundState = rounds[rounds.length - 1];
 
     const guesser = roundState.guesser;
     const imGuesser = myId === guesser;
 
-    const curRoundState = roundState.hintsRevealed
-      ? ROUND_STATE.hintsRevealed
-      : roundState.hintsSubmitted
-      ? ROUND_STATE.hintsSubmitted
-      : ROUND_STATE.waitingForHints;
-
-    const acceptingInput =
-      (imGuesser && curRoundState === ROUND_STATE.hintsRevealed) ||
-      (!imGuesser && curRoundState === ROUND_STATE.waitingForHints);
-
-    const guessSubmitted = roundState.guesses.length > 0;
+    const curRoundState = ROUND_STATE[roundState.curState];
+    const hintsSubmitted = curRoundState > ROUND_STATE.GivingHints;
+    const hintsRevealed = curRoundState > ROUND_STATE.RemovingDuplicates;
     const guess = _.isEmpty(roundState.guesses)
       ? null
       : _.last(roundState.guesses);
@@ -90,8 +83,8 @@ class JustOne extends Component {
           displayName={this.props.users[id].displayName}
           isGuesser={myId === guesser}
           hintState={roundState.hints[id]}
-          hintsSubmitted={roundState.hintsSubmitted}
-          hintsRevealed={roundState.hintsRevealed}
+          hintsSubmitted={hintsSubmitted}
+          hintsRevealed={hintsRevealed}
         />
       ));
 
@@ -99,7 +92,7 @@ class JustOne extends Component {
       <div id="justOneGameView">
         {imGuesser ? (
           <GuesserInput
-            hintsRevealed={curRoundState === ROUND_STATE.hintsRevealed}
+            hintsRevealed={hintsRevealed}
             guessState={guess}
             onGuess={(guess) => lobbySocket.send(new GuessMsg(guess))}
             onNextRound={() => lobbySocket.send(new NextRoundMsg())}
@@ -108,8 +101,8 @@ class JustOne extends Component {
           <HinterInput
             word={word}
             guess={guess}
-            hintsSubmitted={roundState.hintsSubmitted}
-            hintsRevealed={roundState.hintsRevealed}
+            hintsSubmitted={hintsSubmitted}
+            hintsRevealed={hintsRevealed}
             onGuessCorrect={() => lobbySocket.send(new CorrectGuessMsg())}
             onGuessWrong={() => lobbySocket.send(new WrongGuessMsg())}
             onRevealHints={() => lobbySocket.send(new RevealHintsMsg())}

@@ -84,7 +84,7 @@ class ExistingLobby extends Component {
           console.log("Error", data);
         });
         lobbySocket.register("gameState", messageType.GAME_STATE, (data) => {
-          const state = data.state;
+          const state = data;
           console.log("game state message received. state:", state);
           this.updateUsers(state.players);
           this.setState({
