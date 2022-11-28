@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 import _ from "underscore";
 import LeaveMsg from "../models/leave-msg";
+import WsMessage from "../models/ws-message";
 
 const backend_url = process.env.REACT_APP_SERVER_URL;
 export const http_url =
@@ -17,7 +18,16 @@ export const default_opts = {
   scope: "",
 };
 
-export const makeIdApiCall = (url, options = {}, userId) => {
+interface ApiCallOpts {
+  headers?: any;
+  audience?: string;
+  scope?: string;
+}
+export const makeIdApiCall = (
+  url: string,
+  options: ApiCallOpts = {},
+  userId: string
+) => {
   return fetch(url, {
     ...options,
     headers: {
@@ -30,12 +40,16 @@ export const makeIdApiCall = (url, options = {}, userId) => {
   }).then((res) => res.json());
 };
 
-export const makeApiCall = (url, options = {}, auth0) => {
+export const makeApiCall = (
+  url: string,
+  options: ApiCallOpts = {},
+  auth0: any
+) => {
   const { getAccessTokenSilently } = auth0;
 
   const { audience, scope, ...fetchOptions } = options;
   return getAccessTokenSilently({ audience, scope })
-    .then((accessToken) =>
+    .then((accessToken: string) =>
       fetch(url, {
         ...fetchOptions,
         headers: {
@@ -47,17 +61,21 @@ export const makeApiCall = (url, options = {}, auth0) => {
         },
       })
     )
-    .then((res) => res.json());
+    .then((res: Response) => res.json());
 };
 
-export const useIdApi = (url, options = {}, userId) => {
+export const useIdApi = (
+  url: string,
+  options: ApiCallOpts = {},
+  userId: string
+) => {
   options["headers"] = options["headers"] || {};
   options["headers"]["X-USER-ID"] = userId;
 
   return useUnauthedApi(url, options);
 };
 
-export const useUnauthedApi = (url, options = {}) => {
+export const useUnauthedApi = (url: string, options: ApiCallOpts = {}) => {
   const [state, setState] = useState({
     error: null,
     loading: true,
@@ -83,7 +101,7 @@ export const useUnauthedApi = (url, options = {}) => {
           error: null,
           loading: false,
         });
-      } catch (error) {
+      } catch (error: any) {
         setState({
           ...state,
           error,
@@ -99,7 +117,7 @@ export const useUnauthedApi = (url, options = {}) => {
   };
 };
 
-export const useApi = (url, options = {}) => {
+export const useApi = (url: string, options: ApiCallOpts = {}) => {
   const { getAccessTokenSilently } = useAuth0();
   const [state, setState] = useState({
     error: null,
@@ -129,7 +147,7 @@ export const useApi = (url, options = {}) => {
           error: null,
           loading: false,
         });
-      } catch (error) {
+      } catch (error: any) {
         setState({
           ...state,
           error,
@@ -147,9 +165,14 @@ export const useApi = (url, options = {}) => {
 
 const pingMsg = "ping";
 
-export const useCreateWs = (url, options = {}) => {
+interface WsState {
+  error: any;
+  loading: boolean;
+  websocket: WebSocket | null;
+}
+export const useCreateWs = (url: string, options: ApiCallOpts = {}) => {
   const { getAccessTokenSilently } = useAuth0();
-  const [state, setState] = useState({
+  const [state, setState] = useState<WsState>({
     error: null,
     loading: true,
     websocket: null,
@@ -166,7 +189,7 @@ export const useCreateWs = (url, options = {}) => {
         const ping = () => {
           websocket.send(pingMsg);
         };
-        var pingInterval = null;
+        var pingInterval: number | null = null;
         var authMsg = {
           msgType: "join",
           data: {
@@ -215,7 +238,10 @@ export const useCreateWs = (url, options = {}) => {
 };
 
 export class LobbySocket {
-  constructor(ws) {
+  ws: WebSocket;
+  handlers: Record<string, Array<{ id: string; fun: Function }>>;
+
+  constructor(ws: WebSocket) {
     this.handleMessage = this.handleMessage.bind(this);
 
     this.ws = ws;
@@ -224,7 +250,7 @@ export class LobbySocket {
     ws.onmessage = this.handleMessage;
   }
 
-  handleMessage(event) {
+  handleMessage(event: MessageEvent) {
     console.log("received message");
     let message = JSON.parse(event.data);
     let type = message.msgType;
@@ -241,19 +267,19 @@ export class LobbySocket {
     }
   }
 
-  register(handleId, type, handle) {
+  register(handleId: string, type: string, handle: (data: any) => void) {
     const handleObj = { id: handleId, fun: handle };
     const handleList = this.handlers[type] || [];
     handleList.push(handleObj);
     this.handlers[type] = handleList;
   }
 
-  send(message) {
+  send(message: WsMessage) {
     console.log("send message: ", message);
     this.ws.send(message.toString());
   }
 
-  remove(handleId, type) {
+  remove(handleId: string, type: string) {
     this.handlers[type] = this.handlers[type].filter((h) => h.id !== handleId);
   }
 
@@ -264,12 +290,12 @@ export class LobbySocket {
   }
 }
 
-export const createWsIdAuth = (url, options = {}, userId) => {
+export const createWsIdAuth = (url: string, userId: string) => {
   var websocket = new WebSocket(url);
   const ping = () => {
     websocket.send(pingMsg);
   };
-  var pingInterval = null;
+  var pingInterval: null | number = null;
   var authMsg = {
     msgType: "join",
     data: {
@@ -296,40 +322,46 @@ export const createWsIdAuth = (url, options = {}, userId) => {
   return Promise.resolve(new LobbySocket(websocket));
 };
 
-export const createWs = (url, options = {}, auth0) => {
+export const createWs = (
+  url: string,
+  options: ApiCallOpts = {},
+  auth0: any
+) => {
   const { getAccessTokenSilently } = auth0;
 
   const { audience, scope, ...fetchOptions } = options;
-  return getAccessTokenSilently({ audience, scope }).then((accessToken) => {
-    console.log("accessToken Received, creating websocket");
-    var websocket = new WebSocket(url);
-    const ping = () => {
-      websocket.send(pingMsg);
-    };
-    var pingInterval = null;
-    var authMsg = {
-      msgType: "join",
-      data: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    };
+  return getAccessTokenSilently({ audience, scope }).then(
+    (accessToken: string) => {
+      console.log("accessToken Received, creating websocket");
+      var websocket = new WebSocket(url);
+      const ping = () => {
+        websocket.send(pingMsg);
+      };
+      var pingInterval: null | number = null;
+      var authMsg = {
+        msgType: "join",
+        data: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      };
 
-    websocket.onopen = function (event) {
-      console.log("websocket onopen");
-      websocket.send(JSON.stringify(authMsg));
-      pingInterval = window.setInterval(ping, 5000); //ping the server every 5s so connection isnt closed
-    };
-    websocket.onerror = function (event) {
-      console.log("on error");
-      console.log("Error: ", event);
-    };
+      websocket.onopen = function (event) {
+        console.log("websocket onopen");
+        websocket.send(JSON.stringify(authMsg));
+        pingInterval = window.setInterval(ping, 5000); //ping the server every 5s so connection isnt closed
+      };
+      websocket.onerror = function (event) {
+        console.log("on error");
+        console.log("Error: ", event);
+      };
 
-    websocket.onclose = function (event) {
-      console.log("socket closed", event);
-      if (pingInterval) {
-        window.clearInterval(pingInterval);
-      }
-    };
-    return new LobbySocket(websocket);
-  });
+      websocket.onclose = function (event) {
+        console.log("socket closed", event);
+        if (pingInterval) {
+          window.clearInterval(pingInterval);
+        }
+      };
+      return new LobbySocket(websocket);
+    }
+  );
 };

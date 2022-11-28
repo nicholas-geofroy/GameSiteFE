@@ -1,9 +1,10 @@
-import React from "react";
 import { Route, Switch, useRouteMatch } from "react-router-dom";
 import ExistingLobby from "../components/lobby/existing-lobby";
 import NewLobby from "../components/lobby/new-lobby";
 
-const Lobby = (props) => {
+interface LobbyProps {}
+
+const Lobby = (props: LobbyProps) => {
   let match = useRouteMatch();
   return (
     <div>

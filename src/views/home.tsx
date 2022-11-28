@@ -1,4 +1,3 @@
-import React from "react";
 import { Link } from "react-router-dom";
 
 const titleSize = "5rem";
@@ -6,7 +5,7 @@ const titleLineOneStyle = { color: "var(--p-color)", fontSize: titleSize };
 const titleLineTwoStyle = { color: "var(--s-color)", fontSize: titleSize };
 const containerStyle = {
   display: "flex",
-  flexDirection: "column",
+  flexDirection: "column" as const,
   justifyContent: "space-around",
   height: "80vh",
 };

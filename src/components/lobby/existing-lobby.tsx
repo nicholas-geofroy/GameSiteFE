@@ -1,13 +1,13 @@
-import React, { Component } from "react";
+import { Component } from "react";
 import { withRouter } from "react-router";
-import { withAuth0 } from "@auth0/auth0-react";
+import { RouteComponentProps } from "react-router";
 import "./lobby.css";
 
 import {
   ws_url,
   default_opts,
-  createWs,
   createWsIdAuth,
+  LobbySocket,
 } from "../../backend/backend";
 import UserManager from "../../backend/userManager";
 import StartGameMsg from "../../models/startgame-msg";
@@ -23,13 +23,17 @@ import _ from "underscore";
 import SettingsList from "./settings-list";
 import { usernameRequired } from "../../auth/noauth-route";
 
-const LOBBY_STATE = {
-  SETUP: "setup",
-  ATTEMPT_START: "attempt-start",
-  IN_GAME: "in-game",
-};
+enum LOBBY_STATE {
+  SETUP = "setup",
+  ATTEMPT_START = "attempt-start",
+  IN_GAME = "in-game",
+}
 
-var gameTypeTitle = {};
+interface GameTypeMap {
+  [index: string]: string;
+}
+
+var gameTypeTitle: GameTypeMap = {};
 gameTypeTitle[GameType.JUST_ONE] = "Just One";
 gameTypeTitle[GameType.OH_HELL] = "Oh Hell";
 gameTypeTitle[""] = "Loading...";
@@ -46,9 +50,45 @@ const errorType = {
   NOT_ENOUGH_PLAYERS: "NotEnoughPlayers",
 };
 
+interface MatchParams {
+  lobbyId: string;
+}
+
+interface LobbyProps extends RouteComponentProps<MatchParams> {
+  userId: string;
+}
+
+interface GameState {
+  players: Array<string>;
+}
+
+function isGameState(object: object): object is GameState {
+  return "players" in object;
+}
+
+interface User {
+  id: string;
+  loading: boolean;
+  displayName: string;
+}
+
+interface LobbyState {
+  lobbyState: LOBBY_STATE;
+  users: Record<string, User>;
+  gameState?: GameState;
+  curGameType: GameType | "";
+  lobbySocket?: LobbySocket;
+  error?: any;
+}
+
 class ExistingLobby extends Component {
-  constructor(props) {
+  props: LobbyProps;
+  userManager: UserManager;
+  state: LobbyState;
+
+  constructor(props: LobbyProps) {
     super(props);
+    this.props = props;
 
     this.onStartClick = this.onStartClick.bind(this);
     this.updateUsers = this.updateUsers.bind(this);
@@ -56,9 +96,9 @@ class ExistingLobby extends Component {
     this.state = {
       lobbyState: LOBBY_STATE.SETUP,
       users: {},
-      gameState: {},
+      gameState: undefined,
       curGameType: "",
-      lobbySocket: null,
+      lobbySocket: undefined,
       error: "",
     };
   }
@@ -67,7 +107,7 @@ class ExistingLobby extends Component {
     const lobbyId = this.props.match.params.lobbyId;
     let url = ws_url + "/lobby/" + lobbyId + "/ws";
     console.log("Joining lobby", url, "with user id", this.props.userId);
-    createWsIdAuth(url, default_opts, this.props.userId)
+    createWsIdAuth(url, this.props.userId)
       .then((lobbySocket) => {
         console.log("register callbacks");
         lobbySocket.register("members", messageType.MEMBERS, (data) => {
@@ -84,7 +124,12 @@ class ExistingLobby extends Component {
           console.log("Error", data);
         });
         lobbySocket.register("gameState", messageType.GAME_STATE, (data) => {
-          const state = data;
+          if (!isGameState(data)) {
+            console.log("Received Non Game-State from websocket", data);
+            return;
+          }
+
+          const state: GameState = data;
           console.log("game state message received. state:", state);
           this.updateUsers(state.players);
           this.setState({
@@ -111,7 +156,7 @@ class ExistingLobby extends Component {
     }
   }
 
-  updateUsers(newUsers) {
+  updateUsers(newUsers: Array<string>) {
     console.log("update users (new users:)", newUsers);
     var users = { ...this.state.users };
     newUsers.forEach((userId) => {
@@ -152,13 +197,13 @@ class ExistingLobby extends Component {
 
     if (lobbyState === LOBBY_STATE.IN_GAME) {
       if (curGameType == GameType.OH_HELL) {
-        const onBet = (bet) => {
+        const onBet = (bet: number) => {
           const msg = new BetMsg(bet);
           console.log(`Betting ${bet} tricks`);
           console.log("message", msg);
           lobbySocket.send(msg);
         };
-        const onPlay = (card) => {
+        const onPlay = (card: string) => {
           const msg = new PlayMsg(card);
           console.log("Playing", card);
           lobbySocket.send(msg);
