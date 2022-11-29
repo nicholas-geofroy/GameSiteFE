@@ -3,12 +3,7 @@ import { withRouter } from "react-router";
 import { RouteComponentProps } from "react-router";
 import "./lobby.css";
 
-import {
-  ws_url,
-  default_opts,
-  createWsIdAuth,
-  LobbySocket,
-} from "../../backend/backend";
+import { ws_url, createWsIdAuth, LobbySocket } from "../../backend/backend";
 import UserManager from "../../backend/userManager";
 import StartGameMsg from "../../models/startgame-msg";
 import BetMsg from "../../models/bet-msg";
@@ -64,12 +59,6 @@ interface GameState {
 
 function isGameState(object: object): object is GameState {
   return "players" in object;
-}
-
-interface User {
-  id: string;
-  loading: boolean;
-  displayName: string;
 }
 
 interface LobbyState {
@@ -196,6 +185,10 @@ class ExistingLobby extends Component {
     }
 
     if (lobbyState === LOBBY_STATE.IN_GAME) {
+      if (gameState === undefined) {
+        lobbySocket.send(new GetStateMsg()); // todo: this may cause a lot of calls, we should investigate
+        return <Loading />;
+      }
       if (curGameType == GameType.OH_HELL) {
         const onBet = (bet: number) => {
           const msg = new BetMsg(bet);
@@ -222,7 +215,7 @@ class ExistingLobby extends Component {
           <JustOne
             myId={userId}
             users={users}
-            gameState={gameState}
+            gameState={gameState as JustOneGame}
             lobbySocket={lobbySocket}
           />
         );

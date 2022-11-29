@@ -12,38 +12,35 @@ import _ from "underscore";
 import "./justOneStyle.css";
 import GuesserInput from "./justOneGuesserInput";
 import HinterInput from "./justOneHinterInput";
+import { LobbySocket } from "../../backend/backend";
 
-const ROUND_STATE = {
+const ROUND_STATE: Record<string, number> = {
   GivingHints: 0,
   RemovingDuplicates: 1,
   Guessing: 2,
   RoundFinished: 3,
 };
 
+interface JustOneProps {
+  myId: string;
+  gameState: JustOneGame;
+  lobbySocket: LobbySocket;
+  users: Record<string, User>;
+}
+
+interface JustOneState {
+  input: string;
+}
+
 class JustOne extends Component {
-  constructor(props) {
+  props: JustOneProps;
+  state: JustOneState;
+
+  constructor(props: JustOneProps) {
     super(props);
-    this.handleInputChange = this.handleInputChange.bind(this);
-    this.getSubmitWordFunction = this.getSubmitWordFunction.bind(this);
+    this.props = props;
     this.state = {
       input: "",
-    };
-  }
-
-  handleInputChange(event) {
-    this.setState({
-      input: event.target.value,
-    });
-  }
-
-  getSubmitWordFunction(isGuesser) {
-    return (event) => {
-      console.log("User has submitted a guess/hint");
-      event.preventDefault();
-      const input = this.state.input;
-      this.props.lobbySocket.send(
-        isGuesser ? new GuessMsg(input) : new HintMsg(input)
-      );
     };
   }
 
@@ -68,7 +65,7 @@ class JustOne extends Component {
     const hintsSubmitted = curRoundState > ROUND_STATE.GivingHints;
     const hintsRevealed = curRoundState > ROUND_STATE.RemovingDuplicates;
     const guess = _.isEmpty(roundState.guesses)
-      ? null
+      ? undefined
       : _.last(roundState.guesses);
 
     const word = roundState.word;

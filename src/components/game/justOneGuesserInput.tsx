@@ -1,19 +1,25 @@
-import { useState } from "react";
+import { ChangeEvent, SyntheticEvent, useState } from "react";
 import { Container, Row } from "react-bootstrap";
 
+interface GuesserInputProps {
+  hintsRevealed: boolean;
+  guessState?: Guess;
+  onGuess: (guess: string) => void;
+  onNextRound: () => void;
+}
 export default function GuesserInput({
   hintsRevealed,
   guessState,
   onGuess,
   onNextRound,
-}) {
+}: GuesserInputProps) {
   const [guess, setGuess] = useState("");
 
-  const handleInputChange = (event) => {
+  const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     setGuess(event.target.value);
   };
 
-  const onSubmit = (e) => {
+  const onSubmit = (e: SyntheticEvent) => {
     e.preventDefault();
     onGuess(guess);
     setGuess("");

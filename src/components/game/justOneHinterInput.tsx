@@ -1,6 +1,16 @@
 import { Col, Container, Row } from "react-bootstrap";
-import { useState } from "react";
+import { ChangeEvent, SyntheticEvent, useState } from "react";
 
+interface HinterInputProps {
+  word: string;
+  guess?: Guess;
+  hintsSubmitted: boolean;
+  hintsRevealed: boolean;
+  onGuessCorrect: () => void;
+  onGuessWrong: () => void;
+  onRevealHints: () => void;
+  onHint: (hint: string) => void;
+}
 export default function HinterInput({
   word,
   guess,
@@ -10,14 +20,14 @@ export default function HinterInput({
   onGuessWrong,
   onRevealHints,
   onHint,
-}) {
+}: HinterInputProps) {
   const [hint, setHint] = useState("");
 
-  const handleInputChange = (event) => {
+  const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     setHint(event.target.value);
   };
 
-  const onSubmit = (e) => {
+  const onSubmit = (e: SyntheticEvent) => {
     e.preventDefault();
     onHint(hint);
     return false;
