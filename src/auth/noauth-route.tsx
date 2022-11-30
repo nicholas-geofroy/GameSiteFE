@@ -1,12 +1,5 @@
-import { ComponentClass } from "react";
-import {
-  ChangeEvent,
-  Component,
-  FC,
-  ReactElement,
-  SyntheticEvent,
-  useState,
-} from "react";
+import { ComponentClass, useEffect } from "react";
+import { ChangeEvent, FC, ReactElement, SyntheticEvent, useState } from "react";
 import { Route } from "react-router-dom";
 import Loading from "../components/loading";
 
@@ -22,7 +15,7 @@ interface UsernameProps {
 }
 
 export const usernameRequired = (
-  WrappedComponent: typeof Component<UserComponentProps>
+  WrappedComponent: ComponentClass<UserComponentProps>
 ) => {
   const GetUserId: (p: UsernameProps) => ReactElement = ({
     username,
@@ -57,6 +50,21 @@ function GetDesiredUsername(WrappedComponent: FC<UsernameProps>) {
   const GetUsernameComponent = (props: Record<string, any>) => {
     const [submit, setSubmit] = useState(false);
     const [username, setUsername] = useState("");
+
+    useEffect(() => {
+      let savedUname = window.localStorage.getItem("username");
+
+      if (savedUname !== null) {
+        setUsername(savedUname);
+        setSubmit(true);
+      }
+    }, []);
+
+    useEffect(() => {
+      if (submit) {
+        window.localStorage.setItem("username", username);
+      }
+    }, [submit]);
 
     const handleUsernameChange = (event: ChangeEvent<HTMLInputElement>) => {
       setUsername(event.target.value);
