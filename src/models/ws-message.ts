@@ -1,8 +1,8 @@
 export default class WsMessage {
   msgType: string;
-  data: object;
+  data: any;
 
-  constructor(type: string, data: object) {
+  constructor(type: string, data: any) {
     this.msgType = type;
     this.data = data;
   }

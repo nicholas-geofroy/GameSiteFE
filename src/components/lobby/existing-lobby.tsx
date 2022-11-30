@@ -17,6 +17,7 @@ import GameType from "../game/types";
 import _ from "underscore";
 import SettingsList from "./settings-list";
 import { usernameRequired } from "../../auth/noauth-route";
+import GetGameTypeMsg from "../../models/get-game-type-msg";
 
 enum LOBBY_STATE {
   SETUP = "setup",
@@ -219,7 +220,8 @@ class ExistingLobby extends Component<LobbyProps> {
           />
         );
       } else {
-        return <div>Unknown Game Type</div>;
+        lobbySocket.send(new GetGameTypeMsg()); // todo: this may cause a lot of calls, we should investigate fixed number of retries
+        return <Loading />;
       }
     }
 
