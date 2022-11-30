@@ -75,8 +75,13 @@ export const useIdApi = (
   return useUnauthedApi(url, options);
 };
 
+interface UnauthtedAPIState {
+  error: any;
+  loading: boolean;
+  data: any;
+}
 export const useUnauthedApi = (url: string, options: ApiCallOpts = {}) => {
-  const [state, setState] = useState({
+  const [state, setState] = useState<UnauthtedAPIState>({
     error: null,
     loading: true,
     data: null,

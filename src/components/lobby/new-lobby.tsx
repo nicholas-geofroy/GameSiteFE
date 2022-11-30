@@ -1,4 +1,4 @@
-import React from "react";
+import React, { SyntheticEvent, KeyboardEvent, UIEvent } from "react";
 import { useState } from "react";
 import { Redirect } from "react-router-dom";
 import Loading from "../loading";
@@ -6,7 +6,7 @@ import "./lobby.css";
 
 import { http_url, default_opts, useUnauthedApi } from "../../backend/backend";
 
-const useCreateLobby = (id) => {
+const useCreateLobby = (id: string) => {
   console.log("useCreateLobby: ", id);
   const opts = {
     ...default_opts,
@@ -16,38 +16,19 @@ const useCreateLobby = (id) => {
   return useUnauthedApi(http_url + "/lobby/" + id, opts);
 };
 
-const NewLobbyRequest = (params) => {
-  const { loading, error, data } = useCreateLobby(params.lobbyId);
-
-  if (loading) {
-    return (
-      <>
-        <div className="secondaryText">Creating Lobby ... </div>
-        <Loading></Loading>
-      </>
-    );
-  }
-  if (error) {
-    return <div>{error.error}</div>;
-  }
-
-  console.log(`created lobby with id ${data.id}`);
-  return <Redirect to={`/lobby/${data.id}`} />;
-};
-
-const toValidLobbyId = (id) => {
+const toValidLobbyId = (id: string) => {
   return id.replaceAll(/[\W]/g, "_");
 };
 
 const NewLobby = () => {
   const [lobbyId, setLobbyId] = useState("");
   const [submit, setSubmit] = useState(false);
-  const onSubmit = (event) => {
+  const onSubmit = (event: UIEvent) => {
     setSubmit(true);
     event.preventDefault();
   };
 
-  const onKeyDown = (event) => {
+  const onKeyDown = (event: KeyboardEvent) => {
     if (event.key === "Enter") {
       event.preventDefault();
       onSubmit(event);
