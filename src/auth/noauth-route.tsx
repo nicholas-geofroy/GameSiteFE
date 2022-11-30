@@ -1,9 +1,33 @@
-import React, { useState } from "react";
+import { ComponentClass } from "react";
+import {
+  ChangeEvent,
+  Component,
+  FC,
+  ReactElement,
+  SyntheticEvent,
+  useState,
+} from "react";
 import { Route } from "react-router-dom";
 import Loading from "../components/loading";
 
-export const usernameRequired = (WrappedComponent) => {
-  const GetUsername = ({ username, ...props }) => {
+interface UserComponentProps {
+  userName: string;
+  userId: string;
+  [others: string]: any;
+}
+
+interface UsernameProps {
+  username: string;
+  [x: string]: any;
+}
+
+export const usernameRequired = (
+  WrappedComponent: typeof Component<UserComponentProps>
+) => {
+  const GetUserId: (p: UsernameProps) => ReactElement = ({
+    username,
+    ...props
+  }) => {
     const loading = false;
     const error = null;
     const data = {
@@ -26,19 +50,19 @@ export const usernameRequired = (WrappedComponent) => {
       ></WrappedComponent>
     );
   };
-  return GetDesiredUsername(GetUsername);
+  return GetDesiredUsername(GetUserId);
 };
 
-function GetDesiredUsername(WrappedComponent) {
-  const GetUsernameComponent = (props) => {
+function GetDesiredUsername(WrappedComponent: FC<UsernameProps>) {
+  const GetUsernameComponent = (props: Record<string, any>) => {
     const [submit, setSubmit] = useState(false);
     const [username, setUsername] = useState("");
 
-    const handleUsernameChange = (event) => {
+    const handleUsernameChange = (event: ChangeEvent<HTMLInputElement>) => {
       setUsername(event.target.value);
     };
 
-    const onSubmit = (e) => {
+    const onSubmit = (e: SyntheticEvent) => {
       e.preventDefault();
       setSubmit(true);
       return false;
@@ -68,8 +92,13 @@ function GetDesiredUsername(WrappedComponent) {
   return GetUsernameComponent;
 }
 
-const NoAuthRoute = ({ component, ...args }) => (
-  <Route component={usernameRequired(component)} {...args} />
-);
+interface NoAuthRouteParams {
+  component: ComponentClass<UserComponentProps>;
+  [args: string]: any;
+}
+const NoAuthRoute: (p: NoAuthRouteParams) => ReactElement = ({
+  component,
+  ...args
+}) => <Route component={usernameRequired(component)} {...args} />;
 
 export default NoAuthRoute;

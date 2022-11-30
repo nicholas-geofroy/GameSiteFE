@@ -49,16 +49,17 @@ interface MatchParams {
   lobbyId: string;
 }
 
-interface LobbyProps extends RouteComponentProps<MatchParams> {
-  userId: string;
-}
-
 interface GameState {
   players: Array<string>;
 }
 
 function isGameState(object: object): object is GameState {
   return "players" in object;
+}
+
+interface LobbyProps extends RouteComponentProps<MatchParams> {
+  userId: string;
+  userName: string;
 }
 
 interface LobbyState {
@@ -70,14 +71,12 @@ interface LobbyState {
   error?: any;
 }
 
-class ExistingLobby extends Component {
-  props: LobbyProps;
+class ExistingLobby extends Component<LobbyProps> {
   userManager: UserManager;
   state: LobbyState;
 
   constructor(props: LobbyProps) {
     super(props);
-    this.props = props;
 
     this.onStartClick = this.onStartClick.bind(this);
     this.updateUsers = this.updateUsers.bind(this);
